@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator</title>
+  <style>
+    :root {
+      --bg: #f0f0f0;
+      --primary: #ffffff;
+      --text: #111;
+      --btn-bg: #e0e0e0;
+      --btn-hover: #d4d4d4;
+      --operator-color: #f57c00;
+      --equal-bg: linear-gradient(135deg, #00f2fe, #4facfe);
+      --equal-text: #000;
+      --clear-color: #d32f2f;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --primary: #2a2a2a;
+      --text: #ffffff;
+      --btn-bg: #1e1e1e;
+      --btn-hover: #2c2c2c;
+      --operator-color: #f48fb1;
+      --equal-bg: linear-gradient(135deg, #00f2fe, #4facfe);
+      --equal-text: #000;
+      --clear-color: #ef5350;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+
+    .calculator {
+      background: var(--primary);
+      border-radius: 20px;
+      padding: 20px;
+      width: 340px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    .theme-toggle button {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .display {
+      width: 100%;
+      background: var(--btn-bg);
+      color: var(--text);
+      border: none;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 32px;
+      text-align: right;
+      margin-bottom: 20px;
+      box-shadow: inset 2px 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 15px;
+      background: var(--btn-bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      background: var(--btn-hover);
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn.operator {
+      color: var(--operator-color);
+    }
+
+    .btn.equal {
+      background: var(--equal-bg);
+      color: var(--equal-text);
+      font-weight: bold;
+    }
+
+    .btn.clear {
+      color: var(--clear-color);
+    }
+
+    @media (max-width: 400px) {
+      .calculator {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="theme-toggle">
+      <button onclick="toggleTheme()">🌗 Toggle</button>
+    </div>
+    <input type="text" class="display" id="display" disabled />
+    <div class="buttons">
+      <button class="btn clear" onclick="clearDisplay()">C</button>
+      <button class="btn" onclick="appendValue('(')">(</button>
+      <button class="btn" onclick="appendValue(')')">)</button>
+      <button class="btn operator" onclick="appendValue('/')">÷</button>
+
+      <button class="btn" onclick="appendValue('7')">7</button>
+      <button class="btn" onclick="appendValue('8')">8</button>
+      <button class="btn" onclick="appendValue('9')">9</button>
+      <button class="btn operator" onclick="appendValue('*')">×</button>
+
+      <button class="btn" onclick="appendValue('4')">4</button>
+      <button class="btn" onclick="appendValue('5')">5</button>
+      <button class="btn" onclick="appendValue('6')">6</button>
+      <button class="btn operator" onclick="appendValue('-')">−</button>
+
+      <button class="btn" onclick="appendValue('1')">1</button>
+      <button class="btn" onclick="appendValue('2')">2</button>
+      <button class="btn" onclick="appendValue('3')">3</button>
+      <button class="btn operator" onclick="appendValue('+')">+</button>
+
+      <button class="btn" onclick="appendValue('0')">0</button>
+      <button class="btn" onclick="appendValue('.')">.</button>
+      <button class="btn equal" onclick="calculate()">=</button>
+      <button class="btn" onclick="backspace()">⌫</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+
+    function appendValue(value) {
+      display.value += value;
+    }
+
+    function clearDisplay() {
+      display.value = '';
+    }
+
+    function backspace() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+      try {
+        display.value = eval(display.value.replace(/÷/g, '/').replace(/×/g, '*'));
+      } catch {
+        display.value = 'Error';
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', function (e) {
+      const allowed = '0123456789+-*/().';
+      if (allowed.includes(e.key)) {
+        appendValue(e.key);
+      } else if (e.key === 'Enter') {
+        calculate();
+      } else if (e.key === 'Backspace') {
+        backspace();
+      } else if (e.key === 'Escape') {
+        clearDisplay();
+      }
+    });
+  </script>
+
+</body>
+</html>
